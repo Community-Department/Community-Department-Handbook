@@ -1,0 +1,1218 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CUSA Community Department Handbook</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Cinzel:wght@400;600;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --primary-blue: #1e3a5f;
+            --secondary-blue: #2c5282;
+            --accent-blue: #3182ce;
+            --light-blue: #ebf8ff;
+            --border-blue: #bee3f8;
+            --text-dark: #1a202c;
+            --text-gray: #4a5568;
+            --bg-white: #ffffff;
+            --bg-light: #f7fafc;
+            --gold: #c9a227;
+            --red: #c53030;
+            --green: #276749;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background: var(--bg-light);
+            color: var(--text-dark);
+            line-height: 1.6;
+            overflow-x: hidden;
+        }
+
+        /* === LOGIN GATE === */
+        #login-gate {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(135deg, var(--primary-blue) 0%, var(--secondary-blue) 50%, #1a365d 100%);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 10000;
+            transition: opacity 0.6s ease, visibility 0.6s ease;
+        }
+
+        #login-gate.hidden {
+            opacity: 0;
+            visibility: hidden;
+            pointer-events: none;
+        }
+
+        .login-container {
+            background: rgba(255, 255, 255, 0.98);
+            padding: 3rem 2.5rem;
+            border-radius: 16px;
+            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.4);
+            max-width: 480px;
+            width: 90%;
+            text-align: center;
+            border: 1px solid var(--border-blue);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .login-container::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 4px;
+            background: linear-gradient(90deg, var(--accent-blue), var(--gold), var(--accent-blue));
+        }
+
+        .login-header {
+            margin-bottom: 0.5rem;
+        }
+
+        .login-header h1 {
+            font-family: 'Cinzel', serif;
+            font-size: 1.5rem;
+            color: var(--primary-blue);
+            letter-spacing: 2px;
+            margin-bottom: 0.25rem;
+        }
+
+        .login-header .subtitle {
+            font-size: 0.75rem;
+            text-transform: uppercase;
+            letter-spacing: 3px;
+            color: var(--text-gray);
+            font-weight: 600;
+        }
+
+        .classified-stamp {
+            display: inline-block;
+            border: 2px solid var(--red);
+            color: var(--red);
+            padding: 0.25rem 0.75rem;
+            font-size: 0.7rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            transform: rotate(-3deg);
+            margin: 1rem 0;
+            opacity: 0.8;
+        }
+
+        .login-form {
+            margin-top: 1.5rem;
+        }
+
+        .form-group {
+            margin-bottom: 1.25rem;
+            text-align: left;
+        }
+
+        .form-group label {
+            display: block;
+            font-size: 0.8rem;
+            font-weight: 600;
+            color: var(--text-gray);
+            margin-bottom: 0.5rem;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .form-group input {
+            width: 100%;
+            padding: 0.875rem 1rem;
+            border: 2px solid var(--border-blue);
+            border-radius: 8px;
+            font-size: 1rem;
+            font-family: 'Inter', sans-serif;
+            transition: all 0.3s ease;
+            background: var(--bg-white);
+        }
+
+        .form-group input:focus {
+            outline: none;
+            border-color: var(--accent-blue);
+            box-shadow: 0 0 0 3px rgba(49, 130, 206, 0.15);
+        }
+
+        .btn-primary {
+            width: 100%;
+            padding: 1rem;
+            background: linear-gradient(135deg, var(--primary-blue), var(--secondary-blue));
+            color: white;
+            border: none;
+            border-radius: 8px;
+            font-size: 0.95rem;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 1.5px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-family: 'Inter', sans-serif;
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 25px -5px rgba(30, 58, 95, 0.4);
+        }
+
+        .btn-primary:active {
+            transform: translateY(0);
+        }
+
+        .error-message {
+            color: var(--red);
+            font-size: 0.85rem;
+            margin-top: 0.75rem;
+            font-weight: 500;
+            display: none;
+        }
+
+        .error-message.show {
+            display: block;
+            animation: shake 0.5s ease;
+        }
+
+        @keyframes shake {
+            0%, 100% { transform: translateX(0); }
+            25% { transform: translateX(-8px); }
+            75% { transform: translateX(8px); }
+        }
+
+        /* === MAIN LAYOUT === */
+        #main-content {
+            display: none;
+            min-height: 100vh;
+        }
+
+        #main-content.active {
+            display: flex;
+        }
+
+        /* === SIDEBAR === */
+        .sidebar {
+            width: 280px;
+            background: var(--primary-blue);
+            color: white;
+            position: fixed;
+            height: 100vh;
+            overflow-y: auto;
+            z-index: 1000;
+            transition: transform 0.3s ease;
+            border-right: 1px solid rgba(255,255,255,0.1);
+        }
+
+        .sidebar-header {
+            padding: 2rem 1.5rem 1.5rem;
+            border-bottom: 1px solid rgba(255,255,255,0.1);
+            text-align: center;
+        }
+
+        .sidebar-header h2 {
+            font-family: 'Cinzel', serif;
+            font-size: 1.1rem;
+            letter-spacing: 2px;
+            margin-bottom: 0.25rem;
+        }
+
+        .sidebar-header .dept-name {
+            font-size: 0.75rem;
+            opacity: 0.7;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+        }
+
+        .nav-menu {
+            padding: 1rem 0;
+        }
+
+        .nav-item {
+            display: block;
+            padding: 0.875rem 1.5rem;
+            color: rgba(255,255,255,0.85);
+            text-decoration: none;
+            font-size: 0.9rem;
+            font-weight: 500;
+            transition: all 0.2s ease;
+            border-left: 3px solid transparent;
+            cursor: pointer;
+        }
+
+        .nav-item:hover {
+            background: rgba(255,255,255,0.08);
+            color: white;
+            border-left-color: var(--accent-blue);
+        }
+
+        .nav-item.active {
+            background: rgba(255,255,255,0.12);
+            color: white;
+            border-left-color: var(--gold);
+        }
+
+        .nav-item i {
+            display: inline-block;
+            width: 24px;
+            margin-right: 0.75rem;
+            opacity: 0.7;
+        }
+
+        .nav-section-title {
+            padding: 1.25rem 1.5rem 0.5rem;
+            font-size: 0.7rem;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            color: rgba(255,255,255,0.4);
+            font-weight: 600;
+        }
+
+        .sidebar-footer {
+            padding: 1.5rem;
+            border-top: 1px solid rgba(255,255,255,0.1);
+            font-size: 0.75rem;
+            color: rgba(255,255,255,0.5);
+            text-align: center;
+        }
+
+        /* === MOBILE HEADER === */
+        .mobile-header {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 60px;
+            background: var(--primary-blue);
+            color: white;
+            z-index: 999;
+            align-items: center;
+            justify-content: space-between;
+            padding: 0 1.25rem;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.2);
+        }
+
+        .mobile-header h1 {
+            font-family: 'Cinzel', serif;
+            font-size: 0.9rem;
+            letter-spacing: 1px;
+        }
+
+        .menu-toggle {
+            background: none;
+            border: none;
+            color: white;
+            font-size: 1.5rem;
+            cursor: pointer;
+            padding: 0.5rem;
+        }
+
+        /* === CONTENT AREA === */
+        .content-area {
+            margin-left: 280px;
+            flex: 1;
+            min-height: 100vh;
+            background: var(--bg-light);
+        }
+
+        .section {
+            display: none;
+            padding: 3rem 4rem;
+            max-width: 900px;
+            margin: 0 auto;
+            animation: fadeIn 0.4s ease;
+        }
+
+        .section.active {
+            display: block;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .section-header {
+            margin-bottom: 2.5rem;
+            padding-bottom: 1.5rem;
+            border-bottom: 2px solid var(--border-blue);
+        }
+
+        .section-header h1 {
+            font-family: 'Cinzel', serif;
+            font-size: 2rem;
+            color: var(--primary-blue);
+            margin-bottom: 0.5rem;
+            letter-spacing: 1px;
+        }
+
+        .section-header .breadcrumb {
+            font-size: 0.8rem;
+            color: var(--text-gray);
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .content-card {
+            background: white;
+            border-radius: 12px;
+            padding: 2rem;
+            margin-bottom: 1.5rem;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.08);
+            border: 1px solid var(--border-blue);
+        }
+
+        .content-card h3 {
+            color: var(--secondary-blue);
+            font-size: 1.1rem;
+            margin-bottom: 1rem;
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .content-card p, .content-card li {
+            color: var(--text-gray);
+            line-height: 1.8;
+            margin-bottom: 0.75rem;
+        }
+
+        .content-card ul {
+            padding-left: 1.5rem;
+        }
+
+        .content-card li {
+            margin-bottom: 0.5rem;
+        }
+
+        .highlight-box {
+            background: var(--light-blue);
+            border-left: 4px solid var(--accent-blue);
+            padding: 1.25rem;
+            border-radius: 0 8px 8px 0;
+            margin: 1.5rem 0;
+        }
+
+        .highlight-box p {
+            margin: 0;
+            color: var(--primary-blue);
+            font-weight: 500;
+        }
+
+        /* === TABLE STYLES === */
+        .data-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 1.5rem 0;
+            font-size: 0.9rem;
+        }
+
+        .data-table thead {
+            background: var(--primary-blue);
+            color: white;
+        }
+
+        .data-table th {
+            padding: 1rem;
+            text-align: left;
+            font-weight: 600;
+            text-transform: uppercase;
+            font-size: 0.75rem;
+            letter-spacing: 1px;
+        }
+
+        .data-table td {
+            padding: 1rem;
+            border-bottom: 1px solid var(--border-blue);
+            color: var(--text-gray);
+        }
+
+        .data-table tbody tr:hover {
+            background: var(--light-blue);
+        }
+
+        .data-table tbody tr:nth-child(even) {
+            background: rgba(235, 248, 255, 0.3);
+        }
+
+        .rank-badge {
+            display: inline-block;
+            padding: 0.25rem 0.75rem;
+            border-radius: 4px;
+            font-size: 0.8rem;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .rank-lc { background: #c6f6d5; color: #276749; }
+        .rank-mc { background: #feebc8; color: #c05621; }
+        .rank-hc { background: #fed7d7; color: #c53030; }
+
+        /* === CHAIN OF COMMAND === */
+        .chain-container {
+            display: flex;
+            flex-direction: column;
+            gap: 0;
+            margin: 2rem 0;
+        }
+
+        .chain-item {
+            display: flex;
+            align-items: center;
+            padding: 1.25rem 1.5rem;
+            background: white;
+            border: 2px solid var(--border-blue);
+            border-radius: 8px;
+            margin-bottom: 1rem;
+            position: relative;
+            transition: all 0.3s ease;
+        }
+
+        .chain-item:hover {
+            border-color: var(--accent-blue);
+            box-shadow: 0 4px 12px rgba(49, 130, 206, 0.15);
+        }
+
+        .chain-item::after {
+            content: '▼';
+            position: absolute;
+            bottom: -1.5rem;
+            left: 50%;
+            transform: translateX(-50%);
+            color: var(--accent-blue);
+            font-size: 0.8rem;
+        }
+
+        .chain-item:last-child::after {
+            display: none;
+        }
+
+        .chain-rank {
+            font-family: 'Cinzel', serif;
+            font-size: 1.1rem;
+            color: var(--primary-blue);
+            font-weight: 600;
+            min-width: 200px;
+        }
+
+        .chain-desc {
+            flex: 1;
+            color: var(--text-gray);
+            font-size: 0.9rem;
+        }
+
+        .chain-contact {
+            color: var(--accent-blue);
+            font-weight: 600;
+            font-size: 0.85rem;
+        }
+
+        /* === SIGNATURE SECTION === */
+        .signature-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 1.5rem;
+            margin-top: 2rem;
+        }
+
+        .signature-box {
+            background: white;
+            border: 2px solid var(--border-blue);
+            border-radius: 8px;
+            padding: 1.5rem;
+            text-align: center;
+            transition: all 0.3s ease;
+        }
+
+        .signature-box:hover {
+            border-color: var(--accent-blue);
+        }
+
+        .signature-line {
+            border-bottom: 2px solid var(--text-dark);
+            margin: 2rem 0 0.75rem;
+            padding-bottom: 0.5rem;
+            font-family: 'Cinzel', serif;
+            color: var(--primary-blue);
+            font-size: 1rem;
+        }
+
+        .signature-role {
+            font-size: 0.8rem;
+            color: var(--text-gray);
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .signature-status {
+            margin-top: 0.75rem;
+            font-size: 0.75rem;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .status-signed { color: var(--green); }
+        .status-pending { color: var(--gold); }
+
+        /* === QUICK NAV BUTTONS (TOP) === */
+        .quick-nav {
+            display: flex;
+            gap: 0.5rem;
+            flex-wrap: wrap;
+            margin-bottom: 2rem;
+            padding: 1rem;
+            background: white;
+            border-radius: 8px;
+            border: 1px solid var(--border-blue);
+        }
+
+        .quick-nav-btn {
+            padding: 0.5rem 1rem;
+            background: var(--light-blue);
+            border: 1px solid var(--border-blue);
+            border-radius: 6px;
+            color: var(--secondary-blue);
+            font-size: 0.8rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .quick-nav-btn:hover {
+            background: var(--accent-blue);
+            color: white;
+            border-color: var(--accent-blue);
+        }
+
+        /* === TOC === */
+        .toc-list {
+            list-style: none;
+            padding: 0;
+        }
+
+        .toc-list li {
+            padding: 0.875rem 1rem;
+            border-bottom: 1px solid var(--border-blue);
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            border-radius: 6px;
+        }
+
+        .toc-list li:hover {
+            background: var(--light-blue);
+        }
+
+        .toc-number {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            width: 32px;
+            height: 32px;
+            background: var(--primary-blue);
+            color: white;
+            border-radius: 6px;
+            font-weight: 700;
+            font-size: 0.85rem;
+        }
+
+        .toc-title {
+            font-weight: 600;
+            color: var(--text-dark);
+        }
+
+        .toc-desc {
+            font-size: 0.8rem;
+            color: var(--text-gray);
+            margin-left: auto;
+        }
+
+        /* === RESPONSIVE === */
+        @media (max-width: 1024px) {
+            .sidebar {
+                transform: translateX(-100%);
+            }
+            .sidebar.open {
+                transform: translateX(0);
+            }
+            .content-area {
+                margin-left: 0;
+                padding-top: 60px;
+            }
+            .mobile-header {
+                display: flex;
+            }
+            .section {
+                padding: 1.5rem;
+            }
+            .signature-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        @media (max-width: 640px) {
+            .section-header h1 {
+                font-size: 1.5rem;
+            }
+            .chain-item {
+                flex-direction: column;
+                text-align: center;
+                gap: 0.5rem;
+            }
+            .chain-rank {
+                min-width: auto;
+            }
+            .data-table {
+                font-size: 0.8rem;
+            }
+            .data-table th, .data-table td {
+                padding: 0.75rem 0.5rem;
+            }
+        }
+
+        /* === OVERLAY === */
+        .overlay {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0,0,0,0.5);
+            z-index: 998;
+        }
+        .overlay.active {
+            display: block;
+        }
+    </style>
+</head>
+<body>
+
+    <!-- LOGIN GATE -->
+    <div id="login-gate">
+        <div class="login-container">
+            <div class="login-header">
+                <div class="subtitle">Clockwork's United State of America</div>
+                <h1>Community Department</h1>
+                <div class="subtitle">Tedder Management Team</div>
+            </div>
+            <div class="classified-stamp">Authorized Access Only</div>
+            <form class="login-form" onsubmit="handleLogin(event)">
+                <div class="form-group">
+                    <label for="email">Authorized Email Address</label>
+                    <input type="email" id="email" placeholder="Enter your authorized email..." required autocomplete="email">
+                </div>
+                <button type="submit" class="btn-primary">Request Access</button>
+                <div class="error-message" id="error-msg">
+                    ⚠ Access Denied: This email is not authorized for this handbook.
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- MAIN CONTENT -->
+    <div id="main-content">
+        <!-- Mobile Header -->
+        <div class="mobile-header">
+            <button class="menu-toggle" onclick="toggleSidebar()">☰</button>
+            <h1>CUSA Community Dept</h1>
+            <div style="width: 40px;"></div>
+        </div>
+
+        <!-- Overlay for mobile -->
+        <div class="overlay" onclick="toggleSidebar()"></div>
+
+        <!-- Sidebar Navigation -->
+        <nav class="sidebar" id="sidebar">
+            <div class="sidebar-header">
+                <h2>CUSA</h2>
+                <div class="dept-name">Community Department</div>
+                <div class="dept-name" style="margin-top: 0.25rem; font-size: 0.65rem;">Tedder Management Team</div>
+            </div>
+            <div class="nav-menu">
+                <div class="nav-section-title">Handbook</div>
+                <a class="nav-item active" onclick="showSection('welcome', this)">
+                    <i>📋</i> Welcome & Contents
+                </a>
+                <a class="nav-item" onclick="showSection('introduction', this)">
+                    <i>📖</i> Introduction
+                </a>
+                <a class="nav-item" onclick="showSection('responsibilities', this)">
+                    <i>⚖️</i> Responsibilities
+                </a>
+                <a class="nav-item" onclick="showSection('events', this)">
+                    <i>🎁</i> Events & Giveaways
+                </a>
+                <a class="nav-item" onclick="showSection('quota', this)">
+                    <i>📊</i> Weekly Quota
+                </a>
+                <a class="nav-item" onclick="showSection('chain', this)">
+                    <i>⛓️</i> Chain of Command
+                </a>
+                <a class="nav-item" onclick="showSection('signing', this)">
+                    <i>✍️</i> Signing Page
+                </a>
+            </div>
+            <div class="sidebar-footer">
+                <div style="margin-bottom: 0.5rem;">🔒 Classified - Internal Use</div>
+                <div>CUSA Community Department</div>
+            </div>
+        </nav>
+
+        <!-- Content Area -->
+        <main class="content-area">
+            
+            <!-- WELCOME & TABLE OF CONTENTS -->
+            <section class="section active" id="welcome">
+                <div class="section-header">
+                    <div class="breadcrumb">Community Department Handbook</div>
+                    <h1>Welcome & Table of Contents</h1>
+                </div>
+
+                <div class="content-card">
+                    <h3>🎯 Welcome to the Community Department</h3>
+                    <p>Welcome to the official Community Department Handbook for the Tedder Management Team of Clockwork's United State of America (CUSA). This handbook serves as the definitive guide for all Community Department personnel, outlining our standards, procedures, and expectations.</p>
+                    <div class="highlight-box">
+                        <p>"The strength of our community lies in the dedication and professionalism of our staff. This handbook ensures we operate with unity and purpose."</p>
+                    </div>
+                </div>
+
+                <div class="content-card">
+                    <h3>📑 Table of Contents</h3>
+                    <ul class="toc-list">
+                        <li onclick="showSection('introduction', null)">
+                            <span class="toc-number">01</span>
+                            <span class="toc-title">Introduction</span>
+                            <span class="toc-desc">Overview & Mission</span>
+                        </li>
+                        <li onclick="showSection('responsibilities', null)">
+                            <span class="toc-number">02</span>
+                            <span class="toc-title">Responsibilities</span>
+                            <span class="toc-desc">Duties & Conduct</span>
+                        </li>
+                        <li onclick="showSection('events', null)">
+                            <span class="toc-number">03</span>
+                            <span class="toc-title">Events & Giveaways</span>
+                            <span class="toc-desc">Logging & Procedures</span>
+                        </li>
+                        <li onclick="showSection('quota', null)">
+                            <span class="toc-number">04</span>
+                            <span class="toc-title">Weekly Quota</span>
+                            <span class="toc-desc">Rank Requirements</span>
+                        </li>
+                        <li onclick="showSection('chain', null)">
+                            <span class="toc-number">05</span>
+                            <span class="toc-title">Chain of Command</span>
+                            <span class="toc-desc">Hierarchy & Contacts</span>
+                        </li>
+                        <li onclick="showSection('signing', null)">
+                            <span class="toc-number">06</span>
+                            <span class="toc-title">Signing Page</span>
+                            <span class="toc-desc">Acknowledgment</span>
+                        </li>
+                    </ul>
+                </div>
+            </section>
+
+            <!-- INTRODUCTION -->
+            <section class="section" id="introduction">
+                <div class="section-header">
+                    <div class="breadcrumb">Section 01 — Handbook</div>
+                    <h1>Introduction</h1>
+                </div>
+
+                <div class="content-card">
+                    <h3>🎯 Mission Statement</h3>
+                    <p>The Community Department of CUSA is dedicated to fostering a positive, engaging, and safe environment for all members of Clockwork's United State of America. We serve as the frontline representatives of our community, ensuring that every interaction reflects the values and standards of our organization.</p>
+                </div>
+
+                <div class="content-card">
+                    <h3>📋 Purpose of This Handbook</h3>
+                    <p>This handbook has been compiled to provide all Community Department staff with clear, comprehensive guidelines regarding their roles, responsibilities, and operational procedures. It is a living document that may be updated as our department evolves.</p>
+                    <ul>
+                        <li>Establish clear expectations for all ranks</li>
+                        <li>Provide standardized procedures for events and moderation</li>
+                        <li>Define the chain of command and reporting structure</li>
+                        <li>Ensure accountability through documented quotas and logs</li>
+                    </ul>
+                </div>
+
+                <div class="content-card">
+                    <h3>🏛️ About the Department</h3>
+                    <p>The Community Department operates under the Tedder Management Team and is responsible for community engagement, moderation, event coordination, and staff development. Our team is structured into three command levels to ensure efficient operation and clear lines of authority.</p>
+                    <div class="highlight-box">
+                        <p>All personnel are expected to read, understand, and acknowledge this handbook before commencing their duties.</p>
+                    </div>
+                </div>
+            </section>
+
+            <!-- RESPONSIBILITIES -->
+            <section class="section" id="responsibilities">
+                <div class="section-header">
+                    <div class="breadcrumb">Section 02 — Operations</div>
+                    <h1>Responsibilities</h1>
+                </div>
+
+                <div class="content-card">
+                    <h3>⚖️ General Conduct</h3>
+                    <p>As a representative of the CUSA Community Department, your conduct both on and off duty reflects upon the entire organization. The following standards must be upheld at all times:</p>
+                    <ul>
+                        <li><strong>Professionalism:</strong> Maintain a respectful and professional demeanor in all community interactions</li>
+                        <li><strong>Impartiality:</strong> Treat all community members fairly and without bias</li>
+                        <li><strong>Confidentiality:</strong> Do not disclose internal discussions, logs, or sensitive information</li>
+                        <li><strong>Activity:</strong> Maintain consistent activity levels as defined by your rank's quota</li>
+                        <li><strong>Chain of Command:</strong> Always report through the proper channels</li>
+                    </ul>
+                </div>
+
+                <div class="content-card">
+                    <h3>🛡️ Core Duties</h3>
+                    <p>All Community Department staff share the following core responsibilities:</p>
+                    <ul>
+                        <li><strong>Moderation:</strong> Monitor community spaces and enforce rules consistently</li>
+                        <li><strong>Support:</strong> Assist community members with inquiries and concerns</li>
+                        <li><strong>Documentation:</strong> Maintain accurate logs of all moderation actions and tickets</li>
+                        <li><strong>Events:</strong> Participate in and help coordinate community events</li>
+                        <li><strong>Training:</strong> Attend Officer Training sessions and development programs</li>
+                    </ul>
+                </div>
+
+                <div class="content-card">
+                    <h3>📏 Disciplinary Standards</h3>
+                    <p>Failure to meet responsibilities may result in disciplinary action. The severity of action depends on the nature and frequency of the violation:</p>
+                    <ul>
+                        <li><strong>Verbal Warning:</strong> Minor infractions or first-time offenses</li>
+                        <li><strong>Written Warning:</strong> Repeated minor infractions or moderate offenses</li>
+                        <li><strong>Suspension:</strong> Serious violations or failure to meet quota consistently</li>
+                        <li><strong>Termination:</strong> Severe misconduct or gross negligence</li>
+                    </ul>
+                </div>
+            </section>
+
+            <!-- EVENTS & GIVEAWAYS -->
+            <section class="section" id="events">
+                <div class="section-header">
+                    <div class="breadcrumb">Section 03 — Operations</div>
+                    <h1>Events & Giveaways</h1>
+                </div>
+
+                <div class="content-card">
+                    <h3>🎁 Event Logging Procedures</h3>
+                    <p>All events and giveaways must be properly logged to ensure transparency, track participation, and maintain records for departmental review. Proper logging is mandatory and contributes to your weekly quota.</p>
+                    <div class="highlight-box">
+                        <p>Failure to log events properly may result in the event not counting toward your quota and potential disciplinary review.</p>
+                    </div>
+                </div>
+
+                <div class="content-card">
+                    <h3>📝 How to Log Events</h3>
+                    <p>Follow these steps to ensure your events are properly recorded:</p>
+                    <ul>
+                        <li><strong>Step 1:</strong> Access the official logging platform designated by High Command</li>
+                        <li><strong>Step 2:</strong> Fill out all required fields including event type, date, time, and participants</li>
+                        <li><strong>Step 3:</strong> Attach any relevant screenshots or evidence of the event</li>
+                        <li><strong>Step 4:</strong> Submit the log and await approval from a superior officer</li>
+                        <li><strong>Step 5:</strong> Retain a copy of your log ID for your records</li>
+                    </ul>
+                </div>
+
+                <div class="content-card">
+                    <h3>🎮 Giveaway Guidelines</h3>
+                    <p>When conducting giveaways, adhere to the following protocols:</p>
+                    <ul>
+                        <li>All giveaways must be pre-approved by Middle or High Command</li>
+                        <li>Use only approved giveaway tools and methods</li>
+                        <li>Document winner selection process for fairness verification</li>
+                        <li>Log giveaway details within 24 hours of completion</li>
+                        <li>Ensure prizes are distributed promptly and documented</li>
+                    </ul>
+                </div>
+
+                <div class="content-card">
+                    <h3>📊 Event Types</h3>
+                    <p>The following event categories are recognized for quota and logging purposes:</p>
+                    <ul>
+                        <li><strong>Community Events:</strong> Game nights, tournaments, social gatherings</li>
+                        <li><strong>Training Events:</strong> Officer Training sessions, workshops</li>
+                        <li><strong>Promotional Events:</strong> Recruitment drives, partnership events</li>
+                        <li><strong>Giveaways:</strong> Prize distributions, contests, raffles</li>
+                    </ul>
+                </div>
+            </section>
+
+            <!-- WEEKLY QUOTA -->
+            <section class="section" id="quota">
+                <div class="section-header">
+                    <div class="breadcrumb">Section 04 — Requirements</div>
+                    <h1>Weekly Departmental Quota</h1>
+                </div>
+
+                <div class="content-card">
+                    <h3>📊 Quota Overview</h3>
+                    <p>All Community Department personnel are required to meet weekly quotas to maintain active status. Quotas are reviewed every Sunday at 23:59 EST. Failure to meet quota for two consecutive weeks will trigger a performance review.</p>
+                    <div class="highlight-box">
+                        <p>Logs must be submitted through the proper channels and approved by the designated authority to count toward your quota.</p>
+                    </div>
+                </div>
+
+                <div class="content-card">
+                    <h3>📋 Weekly Quota Requirements by Rank</h3>
+                    <table class="data-table">
+                        <thead>
+                            <tr>
+                                <th>Rank</th>
+                                <th>Command Level</th>
+                                <th>Moderation Logs</th>
+                                <th>Ticket Logs</th>
+                                <th>Event Logs</th>
+                                <th>OT Logs</th>
+                                <th>Minutes</th>
+                                <th>Rank Logs</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td><span class="rank-badge rank-lc">CMOD</span></td>
+                                <td>Lower Command</td>
+                                <td>10</td>
+                                <td>5</td>
+                                <td>1</td>
+                                <td>—</td>
+                                <td>30</td>
+                                <td>—</td>
+                            </tr>
+                            <tr>
+                                <td><span class="rank-badge rank-lc">SCMOD</span></td>
+                                <td>Lower Command</td>
+                                <td>15</td>
+                                <td>8</td>
+                                <td>2</td>
+                                <td>1</td>
+                                <td>45</td>
+                                <td>—</td>
+                            </tr>
+                            <tr>
+                                <td><span class="rank-badge rank-mc">CSEC</span></td>
+                                <td>Middle Command</td>
+                                <td>20</td>
+                                <td>12</td>
+                                <td>3</td>
+                                <td>2</td>
+                                <td>60</td>
+                                <td>5</td>
+                            </tr>
+                            <tr>
+                                <td><span class="rank-badge rank-hc">Director</span></td>
+                                <td>High Command</td>
+                                <td colspan="6" style="text-align: center; font-style: italic;">Oversight & Approval Duties — Quota set by Senior Management</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+
+                <div class="content-card">
+                    <h3>📖 Log Definitions</h3>
+                    <ul>
+                        <li><strong>Moderation Logs:</strong> Documented actions taken against rule violations (warns, kicks, bans)</li>
+                        <li><strong>Ticket Logs:</strong> Recorded support tickets handled and resolved</li>
+                        <li><strong>Event Logs:</strong> Documented community events hosted or co-hosted</li>
+                        <li><strong>OT Logs (Officer Training):</strong> Training sessions conducted or attended</li>
+                        <li><strong>Minutes:</strong> Total active time (in minutes) within community spaces</li>
+                        <li><strong>Rank Logs (CSEC):</strong> Promotions, demotions, or rank changes processed</li>
+                    </ul>
+                </div>
+            </section>
+
+            <!-- CHAIN OF COMMAND -->
+            <section class="section" id="chain">
+                <div class="section-header">
+                    <div class="breadcrumb">Section 05 — Structure</div>
+                    <h1>Chain of Command</h1>
+                </div>
+
+                <div class="content-card">
+                    <h3>⛓️ Department Hierarchy</h3>
+                    <p>The Community Department operates under a strict chain of command to ensure efficient decision-making and clear accountability. Always report to your immediate superior unless circumstances require escalation.</p>
+                </div>
+
+                <div class="chain-container">
+                    <div class="chain-item">
+                        <div class="chain-rank">Community Director</div>
+                        <div class="chain-desc">Highest authority in the department. Oversees all operations, sets policy, and has final decision-making power.</div>
+                        <div class="chain-contact">Contact: Last Resort</div>
+                    </div>
+                    <div class="chain-item">
+                        <div class="chain-rank">Community Secretary</div>
+                        <div class="chain-desc">Middle management. Handles day-to-day operations, rank logs, event approvals, and supervises Lower Command.</div>
+                        <div class="chain-contact">Contact: For operational issues</div>
+                    </div>
+                    <div class="chain-item">
+                        <div class="chain-rank">Senior Community Moderator</div>
+                        <div class="chain-desc">Experienced moderation staff. Assists with training, handles complex tickets, and mentors CMODs.</div>
+                        <div class="chain-contact">Contact: For moderation guidance</div>
+                    </div>
+                    <div class="chain-item">
+                        <div class="chain-rank">Community Moderator</div>
+                        <div class="chain-desc">Entry-level position. Responsible for basic moderation, ticket handling, and event support.</div>
+                        <div class="chain-contact">Contact: First point of contact</div>
+                    </div>
+                </div>
+
+                <div class="content-card">
+                    <h3>📞 Contact Protocol</h3>
+                    <ul>
+                        <li><strong>General Inquiries:</strong> Contact your immediate superior (SCMOD for CMODs, CSEC for SCMODs)</li>
+                        <li><strong>Urgent Issues:</strong> Escalate to the next available superior in the chain</li>
+                        <li><strong>Serious Violations:</strong> Report directly to Community Director</li>
+                        <li><strong>Administrative Requests:</strong> Submit through CSEC for processing</li>
+                    </ul>
+                    <div class="highlight-box">
+                        <p>Jumping the chain of command without valid reason is considered a breach of protocol and may result in disciplinary action.</p>
+                    </div>
+                </div>
+            </section>
+
+            <!-- SIGNING PAGE -->
+            <section class="section" id="signing">
+                <div class="section-header">
+                    <div class="breadcrumb">Section 06 — Acknowledgment</div>
+                    <h1>Signing Page</h1>
+                </div>
+
+                <div class="content-card">
+                    <h3>✍️ Acknowledgment of Understanding</h3>
+                    <p>By signing below, the undersigned acknowledges that they have read, understood, and agree to abide by all policies, procedures, and expectations outlined in this Community Department Handbook. Failure to adhere to these guidelines may result in disciplinary action up to and including termination.</p>
+                    <div class="highlight-box">
+                        <p>This handbook is classified for internal use only. Distribution outside of authorized personnel is strictly prohibited.</p>
+                    </div>
+                </div>
+
+                <div class="content-card">
+                    <h3>🖊️ Required Signatures</h3>
+                    <div class="signature-grid">
+                        <div class="signature-box">
+                            <div class="signature-line">Imperator_Supremus</div>
+                            <div class="signature-role">Community Director</div>
+                            <div class="signature-status status-signed">✓ Signed</div>
+                        </div>
+                        <div class="signature-box">
+                            <div class="signature-line" style="border-bottom-style: dashed; color: var(--text-gray);">_________________</div>
+                            <div class="signature-role">Senior Management</div>
+                            <div class="signature-status status-pending">⏳ Pending</div>
+                        </div>
+                        <div class="signature-box">
+                            <div class="signature-line" style="border-bottom-style: dashed; color: var(--text-gray);">_________________</div>
+                            <div class="signature-role">Staff Overseer</div>
+                            <div class="signature-status status-pending">⏳ Pending</div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="content-card">
+                    <h3>📅 Document Information</h3>
+                    <p><strong>Document Version:</strong> 1.0</p>
+                    <p><strong>Effective Date:</strong> April 2026</p>
+                    <p><strong>Review Date:</strong> Quarterly or as needed</p>
+                    <p><strong>Classification:</strong> Internal Use — Authorized Personnel Only</p>
+                    <p><strong>Department:</strong> Community Department — Tedder Management Team</p>
+                    <p><strong>Issuing Authority:</strong> Clockwork's United State of America (CUSA)</p>
+                </div>
+            </section>
+
+        </main>
+    </div>
+
+    <script>
+        // Authorized emails list
+        const authorizedEmails = [
+            "elspethmiska@gmail.com"
+        ];
+
+        // Handle login
+        function handleLogin(event) {
+            event.preventDefault();
+            const email = document.getElementById('email').value.toLowerCase().trim();
+            const errorMsg = document.getElementById('error-msg');
+            const loginGate = document.getElementById('login-gate');
+            const mainContent = document.getElementById('main-content');
+
+            if (authorizedEmails.includes(email)) {
+                loginGate.classList.add('hidden');
+                setTimeout(() => {
+                    mainContent.classList.add('active');
+                }, 300);
+                errorMsg.classList.remove('show');
+            } else {
+                errorMsg.classList.add('show');
+                document.getElementById('email').value = '';
+            }
+        }
+
+        // Show section
+        function showSection(sectionId, navElement) {
+            // Hide all sections
+            document.querySelectorAll('.section').forEach(section => {
+                section.classList.remove('active');
+            });
+            
+            // Show target section
+            document.getElementById(sectionId).classList.add('active');
+            
+            // Update nav active state
+            if (navElement) {
+                document.querySelectorAll('.nav-item').forEach(item => {
+                    item.classList.remove('active');
+                });
+                navElement.classList.add('active');
+            }
+            
+            // Close mobile sidebar
+            if (window.innerWidth <= 1024) {
+                document.getElementById('sidebar').classList.remove('open');
+                document.querySelector('.overlay').classList.remove('active');
+            }
+            
+            // Scroll to top
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        }
+
+        // Toggle sidebar on mobile
+        function toggleSidebar() {
+            const sidebar = document.getElementById('sidebar');
+            const overlay = document.querySelector('.overlay');
+            sidebar.classList.toggle('open');
+            overlay.classList.toggle('active');
+        }
+
+        // Close sidebar when clicking nav items on mobile
+        document.querySelectorAll('.nav-item').forEach(item => {
+            item.addEventListener('click', () => {
+                if (window.innerWidth <= 1024) {
+                    document.getElementById('sidebar').classList.remove('open');
+                    document.querySelector('.overlay').classList.remove('active');
+                }
+            });
+        });
+    </script>
+</body>
+</html>"""   
